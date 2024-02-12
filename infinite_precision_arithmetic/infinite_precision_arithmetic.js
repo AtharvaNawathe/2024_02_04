@@ -6,179 +6,155 @@
  * @param {number[]} arr2 - The second array of digits.
  * @returns {number[]} - Array representing the sum of the input arrays.
  */
-function addArrays(arr1, arr2) {
-  // Initialize carry to 0 and the sum array to store the sum
-  let c = 0;
-  let sum = [];
+//Defining the class
+class InfiniteNumber {
+  constructor(array) {
+    this.validateNumbers(array);
+    this.array = array;
 
-  // Iterate through the arrays from right to left
-  for (let i = arr1.length - 1, j = arr2.length - 1;i >= 0 || j >= 0;i--, j--) {
-  //Checking if number is negative or not
-    if(arr1[i] < 0 || arr2[j] < 0)
-    {
-      throw new console.error("Invalid input!!");
+  }
+//validateNumbers method to validate elements of array
+  validateNumbers(array) {
+    if (!Array.isArray(array)) {
+      throw new Error("Input must be an array");
     }
-    // Get the current digits from both arrays or default to 0
-    let digit1 = i >= 0 ? arr1[i] : 0;
-    let digit2 = j >= 0 ? arr2[j] : 0;
 
-    // Calculate the sum of the current digits and the carry
-    let add = digit1 + digit2 + c;
+    for (let i = 0; i < array.length; i++) {
+      const element = array[i];
+//checking with all datatypes
+      if (
+        !Number.isInteger(element) ||
+        element <= 0 ||
+        element % 1 !== 0 || 
+        element === Infinity ||
+        element === -Infinity ||
+        element === undefined ||
+        element === null ||
+        typeof element === "string" ||
+        typeof element === "boolean"
+      ) {
+        throw new Error("Array elements must be positive integers and meet additional constraints");
+      }
+    }
+  }
+  add(otherArray) {
+    if (otherArray instanceof InfiniteNumber) {
+      const result = [];
+      let c = 0;
 
-    // Check if the sum is greater than 9
-    if (add > 9) {
-      let mod = add % 10;
-      sum.unshift(mod);
-      let toint = Math.floor(add/10)
-      c = toint;
+      for (let i = this.array.length - 1, j = otherArray.array.length - 1; i >= 0 || j >= 0; i--, j--) {
+        let digit1 = i >= 0 ? this.array[i] : 0;
+        let digit2 = j >= 0 ? otherArray.array[j] : 0;
+
+        let add = digit1 + digit2 + c;
+
+        if (add > 9) {
+          let mod = add % 10;
+          result.unshift(mod);
+          let toint = Math.floor(add / 10);
+          c = toint;
+        } else {
+          result.unshift(add);
+          c = 0;
+        }
+      }
+
+      if (c > 0) result.unshift(c);
+      return new InfiniteNumber(result);
     } else {
-      // If no carry is needed, add the sum to the beginning of the result array
-      sum.unshift(add);
-      c = 0;
+      throw new Error("Input must be an instance of InfiniteNumber");
     }
   }
-  // If there is a carry remaining, add it to the beginning of the result array
-  if (c > 0) sum.unshift(c);
-  return sum;
-}
+//subtract method for subtracting array
+  subtract(otherArray) {
+    if (otherArray instanceof InfiniteNumber) {
+      const result = [];
+      let borrow = 0;
 
-  let array1 = [7,3,3];
-  let array2 = [7,7,7];
-	console.log("Addition of two arrays");
-  console.log(addArrays(array1, array2));
+      for (let i = this.array.length - 1, j = otherArray.array.length - 1; i >= 0 || j >= 0; i--, j--) {
+        let digit1 = i >= 0 ? this.array[i] : 0;
+        let digit2 = j >= 0 ? otherArray.array[j] : 0;
+        let minus = digit1 - digit2 - borrow;
 
-/**
- * Subtract two arrays representing positive integers.
- * The inputs must be positive, and the output may be negative.
- *
- * @param {number[]} arr1 - The first array of digits (minuend).
- * @param {number[]} arr2 - The second array of digits (subtrahend).
- * @returns {number[]} - Array representing the result of subtracting arr2 from arr1.
- */
-function subtractArrays(arr1, arr2) {
-	// Initialize borrow to 0 and the sub array to store the subtraction.
-	let borrow = 0;
-	let sub = [];
+        if (minus < 0) {
+          minus += 10;
+          borrow = 1;
+        } else {
+          borrow = 0;
+        }
 
-	// Check if arr1 is smaller than arr2, and swap them if false.
-	if (arr1[0] < arr2[0]) {
-		// Swap arr1 and arr2
-		[arr1, arr2] = [arr2, arr1];
-
-		for (let i = arr1.length - 1, j = arr2.length - 1; i >= 0 || j >= 0; i--, j--) {
-    //Checking if number is negative or not
-      if(arr1[i]<0 || arr2[j] <0)
-      {
-        throw new console.error("Invalid input!!");
+        result.unshift(minus);
       }
-			let digit1 = i >= 0 ? arr1[i] : 0
-			let digit2 = j >= 0 ? arr2[j] : 0
-			let minus = digit1 - digit2 - borrow;
-			
-			// Adjust borrow and result array based on subtraction result.
-			if (minus < 0) {
-				minus += 10;
-				borrow = 1;
-			} else {
-				borrow = 0;
-			}
-			sub.unshift(minus); // Add the number digit to the beginning of the array.
-		}
 
-		//arr1 was smaller, the result is negative.
-		sub[0] *= -1;
-		return sub;
-	} else {
-		for (let i = arr1.length - 1, j = arr2.length - 1; i >= 0 || j >= 0; i--, j--) {
-			let digit1 = i >= 0 ? arr1[i] : 0
-			let digit2 = j >= 0 ? arr2[j] : 0
-			let minus = digit1 - digit2 - borrow;
-			
-			// Adjust borrow and result array based on subtraction result.
-			if (minus < 0) {
-				minus += 10;
-				borrow = 1;
-			} else {
-				borrow = 0;
-			}
+      if (borrow > 0) result.unshift(borrow * -1);
+      return new InfiniteNumber(result);
+    } else {
+      throw new Error("Input must be an instance of InfiniteNumber");
+    }
+  }
+  
+//multiply method to multiply two arrays
+  multiply(otherArray) {
+    if (otherArray instanceof InfiniteNumber) {
+      const result = [0];
 
-			sub.unshift(minus); // Add the  number digit to the beginning of the array.
-		}
+      for (let j = otherArray.array.length - 1; j >= 0; j--) {
+        const temp = [];
 
-		return sub;
-	}
+        for (let k = 0; k < otherArray.array.length - 1 - j; k++) {
+          temp.push(0);
+        }
+
+        let c = 0;
+
+        for (let i = this.array.length - 1; i >= 0; i--) {
+          let mult = otherArray.array[j] * this.array[i] + c;
+          let mod = mult % 10;
+          c = Math.floor(mult / 10);
+          temp.unshift(mod);
+        }
+
+        if (c > 0) {
+          temp.unshift(c);
+        }
+
+        result.unshift(...temp);
+      }
+
+      // Remove leading zeros from the result array
+      while (result.length > 1 && result[0] === 0) {
+        result.shift();
+      }
+
+      return new InfiniteNumber(result);
+    } else {
+      throw new Error("Input must be an instance of InfiniteNumber");
+    }
+  }
 }
 
 
-let a = [1,0,0];
-let b = [1,6,8];
+//calling all the functions
+let array1 = new InfiniteNumber([7, 3, 3]);
+let array2 = new InfiniteNumber([7, 7, 7]);
+let array9 = new InfiniteNumber([])
+
+console.log("Addition of two arrays:");
+array9 = array1.add(array2).array;
+console.log(array9);
+
+let array3 = new InfiniteNumber([1, 0, 0]);
+let array4 = new InfiniteNumber([1, 6, 8]);
+let array8 = new InfiniteNumber([])
+
 console.log("Subtraction of two arrays:");
-console.log(subtractArrays(a, b));
+array8 = array3.subtract(array4).array;
+console.log(array8);
 
+let array5 = new InfiniteNumber([2, 3, 4]);
+let array6 = new InfiniteNumber([9, 6, 0, 4, 3, 6, 4, 3, 3, 7]);
+let array7 = new InfiniteNumber([])
 
-/**
- * Function to multiply two arrays representing numbers.
- * The arrays can be of different sizes. Input cannot be negative 
- * output may be positive
- *
- * @param {number[]} arr1 - The first array of digits.
- * @param {number[]} arr2 - The second array of digits.
- * @returns {number[]} - Array representing the product of the input arrays.
- */
-function multArrays(arr1, arr2) {
-  // Initialize mul array with zero
-  let mul = [0];
-
-  // Iterate arr2 from right to left
-  for (let j = arr2.length - 1; j >= 0; j--) {
-  //Checking if number is negative or not
-    if(arr2[j] <0)
-    {
-      throw new console.error("Invalid input!!");
-    }
-    // Initialize temporary array for the current product
-    let temp = [];
-
-    // Add zeros based on the position in arr2
-    for (let k = 0; k < arr2.length - 1 - j; k++) {
-      temp.push(0);
-    }
-
-    // Initialize carry to 0
-    let c = 0;
-
-    // Multiply arr1 with the current digit of arr2
-    for (let i = arr1.length - 1; i >= 0; i--) {
-    ////Checking if number is negative or not
-      if(arr2[j] <0)
-      {
-        throw new console.error("Invalid input!!");
-      }
-      let mult = arr2[j] * arr1[i] + c;
-      let mod = mult % 10;
-      c = Math.floor(mult / 10);
-      temp.unshift(mod);
-    }
-
-    // If there is a carry remaining, add it to the beginning of temp
-    if (c > 0) {
-      temp.unshift(c);
-    }
-
-    // Add the current product to the result array using the addArrays function
-    mul = addArrays(mul, temp);
-  }
-
-  // // Remove leading zeros from the result array
-  // while (mul.length > 1 && mul[0] === 0) {
-  //   mul.shift();
-  // }
-
-  return mul;
-}
-
-let a1 = [2,3,4];
-let a2 = [9,6,0,4,3,6,4,3,3,7];
-console.log("Multiplication of two arrays:");   
-console.log(multArrays(a1, a2));
-
+console.log("Multiplication of two arrays:");
+array7 = array5.multiply(array6).array;
+console.log(array7);
