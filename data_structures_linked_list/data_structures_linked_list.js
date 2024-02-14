@@ -2,6 +2,7 @@
  * Implementation of Linked list in Javascript. performing operations
  * like creating a linked list, adding element at first, last and 
  * specific index also removing first node last node and node at specific index
+ * @author : Atharva Nawathe
  */
 
 // Creating a Node

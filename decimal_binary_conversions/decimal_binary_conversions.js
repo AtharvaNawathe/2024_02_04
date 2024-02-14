@@ -1,9 +1,9 @@
 /*
 * Implemented these 4 functions
-* 1] getSimple2sComplement
-* 2] getSimpleDecimalFrom2sComplement
-* 3] getJSNumberRepresentation
-* 4] getNumericFromJSRepresentation
+* 1 getSimple2sComplement
+* 2 getSimpleDecimalFrom2sComplement
+* 3 getJSNumberRepresentation
+* 4 getNumericFromJSRepresentation
 * @author : Atharva Nawathe
 */
 

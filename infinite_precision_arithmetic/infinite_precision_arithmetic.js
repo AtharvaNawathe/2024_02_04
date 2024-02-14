@@ -1,4 +1,13 @@
 /**
+ * Implementation of a class named InfiniteNumber where following operations
+ * are performed
+ * 1 Addition
+ * 2 Subtraction
+ * 3 Multiplication
+ * @author: Atharva Nawathe
+ */
+
+/**
  * Class representing an infinite precision number.
  */
 class InfiniteNumber {
@@ -169,7 +178,7 @@ class InfiniteNumber {
   }
 }
 
-// Example usage
+// Giving Inputs 
 let array1 = new InfiniteNumber([7, 3, 3]);
 let array2 = new InfiniteNumber([7, 7, 7]);
 let array3 = array1.add(array2);
